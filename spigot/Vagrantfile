@@ -1,0 +1,19 @@
+VAGRANTFILE_API_VERSION = "2"
+
+$script = <<SCRIPT
+mkdir ~/spigot;cd ~/spigot
+sudo yum install wget git java-1.8.0-openjdk* -y
+wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar
+export MAVEN_OPTS="-Xmx4G"
+java -Xmx4G -jar BuildTools.jar
+cp craftbukkit-1.8.3.jar /vagrant/
+cp spigot-1.8.3.jar /vagrant/
+SCRIPT
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "cent65"
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 6144
+  end
+  config.vm.provision "shell", inline: $script
+end
